@@ -1,0 +1,143 @@
+Documentation
+
+Installation d'openCV 4.4.0
+
+OS utilisé : Linux Mint 20
+
+commande :
+
+Etape 1 : OS Libraries
+
+sudo apt update
+sudo apt remove x264 libx264-dev
+sudo apt install build-essential checkinstall cmake pkg-config yasm
+sudo apt install git gfortran
+sudo apt install libjpeg8-dev libpng-dev
+sudo apt install software-properties-common
+sudo add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
+sudo apt update
+sudo apt install libjasper1
+sudo apt install libtiff-dev
+	 
+sudo apt install libavcodec-dev libavformat-dev libswscale-dev libdc1394-22-dev
+sudo apt install libxine2-dev libv4l-dev
+cd /usr/include/linux
+sudo ln -s -f ../libv4l1-videodev.h videodev.h
+cd "$cwd"
+	 
+sudo apt install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+sudo apt install libgtk2.0-dev libtbb-dev qt5-default
+sudo apt install libatlas-base-dev
+sudo apt install libfaac-dev libmp3lame-dev libtheora-dev
+sudo apt install libvorbis-dev libxvidcore-dev
+sudo apt install libopencore-amrnb-dev libopencore-amrwb-dev
+sudo apt install libavresample-dev
+sudo apt install x264 v4l-utils
+	 
+Etape 2 : Téléchargment d'OpenCV 4
+
+git clone https://github.com/opencv/opencv.git
+cd opencv
+git checkout $cvVersion
+cd ..	 
+git clone https://github.com/opencv/opencv_contrib.git
+cd opencv_contrib
+git checkout $cvVersion
+cd ..
+
+
+Etape 3 : Compilation et installation d'OpenCV 4
+
+cd opencv
+mkdir build
+cd build
+
+cmake -D CMAKE_BUILD_TYPE=RELEASE \
+	            -D CMAKE_INSTALL_PREFIX=$cwd/installation/usr/local \
+	            -D INSTALL_C_EXAMPLES=ON \
+	            -D INSTALL_PYTHON_EXAMPLES=ON \
+	            -D WITH_TBB=ON \
+	            -D WITH_V4L=ON \
+	            -D OPENCV_PYTHON3_INSTALL_PATH=$cwd/OpenCV-$cvVersion-py3/lib/python3.5/site-packages \
+	        -D WITH_QT=ON \
+	        -D WITH_OPENGL=ON \
+	        -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
+	        -D BUILD_EXAMPLES=ON ..
+
+
+make -j4
+make install
+
+
+
+----------------------------------------
+
+
+
+OpenCV est donc utilisable directement via le terminal ( vérifiable en lancant dans le terminal python3 et en 
+essayant d'importer openCV via "import cv2"
+
+Cependant, d'autre bibliothèques importante doivent être installé pour pouvoir utiliser le programme correctement. 
+
+
+
+Il faut installer imutils, ainsi que numpy via ces commandes:
+
+sudo pip install python3 imutils 
+sudo pip install python3 numpy
+
+Le programme est désormais utilisable. Il n'est pas nécessaire d'utiliser un IDE pour le faire fonctionner. 
+
+Arriver jusqu'ici, il est alors possible de lancer le programme sur raspberry si Python 3 est bien installé dessus. 
+
+
+
+----------------------------------------
+
+Lier Code::BLocks 20.03 à OpenCV 4 :
+
+
+1) Créer un nouveau Empty project
+2) Se rendre dans les build options du project
+3) Se rendre dans la section "Linker settings"
+4) AJoutez toutes ces libraries : 
+
+../../../../../usr/local/lib/libopencv_calib3d.so        (Le nombre de ../ dépend de la position du projet par rapport aux librairies. Le mieux est d'allez les chercher soit même puis de sélectionner "chemin relatif" )
+
+../../../../../usr/local/lib/libopencv_core.so 
+../../../../../usr/local/lib/libopencv_dnn.so
+../../../../../usr/local/lib/libopencv_features2d.so
+../../../../../usr/local/lib/libopencv_flann.so
+../../../../../usr/local/lib/libopencv_gapi.so
+../../../../../usr/local/lib/libopencv_highgui.so
+../../../../../usr/local/lib/libopencv_imgcodecs.so
+../../../../../usr/local/lib/libopencv_imgproc.so
+../../../../../usr/local/lib/libopencv_ml.so
+../../../../../usr/local/lib/libopencv_objdetect.so
+../../../../../usr/local/lib/libopencv_photo.so
+../../../../../usr/local/lib/libopencv_stitching.so
+../../../../../usr/local/lib/libopencv_video.so
+../../../../../usr/local/lib/libopencv_videoio.so     
+../../../../../usr/local/lib/libopencv_face.so     
+
+4) Se rendre dans la section "Search directories", puis la sous-section "Compiler"
+5) ajoutez cette ligne :
+
+../../../../../usr/local/include/opencv2
+
+6) se rendre dans la sous-section "Linker" et ajoutez cette ligne :
+
+../../../../../usr/local/lib
+
+
+
+
+
+
+
+
+---------------
+
+EN ayant suivi ces étapes, OpenCV est prêt à l'emploi sur Code::Blocks 20.03, il suffit d'importer la bibliothéque de cette façon :
+
+#include <opencv2/opencv.hpp>
